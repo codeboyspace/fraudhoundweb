@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FraudHound - Cyber Sentinel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --neon-cyan: #00fff7;
+      --neon-pink: #ff006e;
+      --neon-purple: #8338ec;
+      --neon-green: #39ff14;
+      --dark-bg: #0a0a0a;
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a0033 25%, #000 50%, #001a33 75%, #0a0a0a 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 8s ease infinite;
+      color: var(--neon-cyan);
+      overflow-x: hidden;
+      position: relative;
+    }
+    
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .cyber-grid {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(0, 255, 247, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 247, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    .floating-particles {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+    }
+    
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--neon-cyan);
+      border-radius: 50%;
+      animation: float 6s infinite linear;
+      opacity: 0.6;
+    }
+    
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+    
+    .main-container {
+      position: relative;
+      z-index: 10;
+    }
+    
+    .neon-glow {
+      box-shadow: 
+        0 0 5px var(--neon-cyan),
+        0 0 10px var(--neon-cyan),
+        0 0 15px var(--neon-cyan),
+        0 0 20px var(--neon-cyan);
+    }
+    
+    .neon-glow-pink {
+      box-shadow: 
+        0 0 5px var(--neon-pink),
+        0 0 10px var(--neon-pink),
+        0 0 15px var(--neon-pink),
+        0 0 20px var(--neon-pink);
+    }
+    
+    .neon-glow-green {
+      box-shadow: 
+        0 0 5px var(--neon-green),
+        0 0 10px var(--neon-green),
+        0 0 15px var(--neon-green),
+        0 0 20px var(--neon-green);
+    }
+    
+    .cyber-border {
+      border: 2px solid transparent;
+      background: linear-gradient(45deg, #000, #111) padding-box,
+                  linear-gradient(45deg, var(--neon-cyan), var(--neon-pink), var(--neon-purple), var(--neon-cyan)) border-box;
+      box-shadow: 
+        inset 0 0 20px rgba(0, 255, 247, 0.1),
+        0 0 20px rgba(0, 255, 247, 0.2);
+    }
+    
+    .glitch-title {
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      background: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink), var(--neon-purple), var(--neon-green));
+      background-size: 400% 400%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 3s ease infinite, glitch 2s infinite;
+      text-shadow: 
+        0 0 10px var(--neon-cyan),
+        0 0 20px var(--neon-cyan),
+        0 0 30px var(--neon-cyan);
+    }
+    
+    @keyframes glitch {
+      0%, 90%, 100% {
+        transform: translate(0);
+        filter: hue-rotate(0deg);
+      }
+      10% {
+        transform: translate(-2px, 2px);
+        filter: hue-rotate(90deg);
+      }
+      20% {
+        transform: translate(2px, -2px);
+        filter: hue-rotate(180deg);
+      }
+      30% {
+        transform: translate(-2px, -2px);
+        filter: hue-rotate(270deg);
+      }
+      40% {
+        transform: translate(2px, 2px);
+        filter: hue-rotate(360deg);
+      }
+    }
+    
+    .cyber-input {
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .cyber-input::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 247, 0.2), transparent);
+      transition: left 0.5s;
+    }
+    
+    .cyber-input:focus {
+      outline: none;
+      border-color: var(--neon-pink);
+      box-shadow: 
+        0 0 5px var(--neon-pink),
+        0 0 10px var(--neon-pink),
+        inset 0 0 10px rgba(0, 255, 247, 0.1);
+    }
+    
+    .cyber-input:focus::before {
+      left: 100%;
+    }
+    
+    .cyber-button {
+      background: linear-gradient(45deg, rgba(0, 255, 247, 0.1), rgba(255, 0, 110, 0.1));
+      border: 2px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      font-family: 'Orbitron', monospace;
+    }
+    
+    .cyber-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink));
+      transition: left 0.3s ease;
+      z-index: -1;
+    }
+    
+    .cyber-button:hover {
+      color: #000;
+      border-color: var(--neon-pink);
+      box-shadow: 
+        0 0 15px var(--neon-pink),
+        0 0 30px var(--neon-pink);
+      transform: translateY(-2px);
+    }
+    
+    .cyber-button:hover::before {
+      left: 0;
+    }
+    
+    .cyber-button:active {
+      transform: translateY(0);
+    }
+    
+    .download-button {
+      background: linear-gradient(45deg, var(--neon-green), #32ff7e);
+      border: none;
+      color: #000;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-family: 'Orbitron', monospace;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .download-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, #39ff14, #00ff41);
+      transition: left 0.3s ease;
+      z-index: -1;
+    }
+    
+    .download-button:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 
+        0 10px 20px rgba(57, 255, 20, 0.3),
+        0 0 30px var(--neon-green);
+    }
+    
+    .download-button:hover::before {
+      left: 0;
+    }
+    
+    .section-card {
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 255, 247, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .section-card::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink), var(--neon-purple), var(--neon-green));
+      background-size: 400% 400%;
+      animation: gradientShift 4s ease infinite;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .section-card:hover::before {
+      opacity: 1;
+    }
+    
+    .section-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 
+        0 10px 30px rgba(0, 255, 247, 0.2),
+        inset 0 0 20px rgba(0, 255, 247, 0.05);
+    }
+    
+    .status-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--neon-green);
+      box-shadow: 0 0 10px var(--neon-green);
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+    }
+    
+    .scan-animation {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .scan-animation::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 247, 0.3), transparent);
+      animation: scan 2s infinite;
+    }
+    
+    @keyframes scan {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+    
+    .terminal-text {
+      font-family: 'Courier New', monospace;
+      color: var(--neon-green);
+      text-shadow: 0 0 5px var(--neon-green);
+    }
+    
+    .matrix-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.03;
+    }
+    
+    .threat-level {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .threat-low {
+      background: rgba(57, 255, 20, 0.2);
+      color: var(--neon-green);
+      border: 1px solid var(--neon-green);
+    }
+    
+    .threat-high {
+      background: rgba(255, 0, 110, 0.2);
+      color: var(--neon-pink);
+      border: 1px solid var(--neon-pink);
+    }
+    
+    .hologram-effect {
+      position: relative;
+    }
+    
+    .hologram-effect::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 255, 247, 0.03) 2px,
+        rgba(0, 255, 247, 0.03) 4px
+      );
+      pointer-events: none;
+    }
+    
+    .loading-bar {
+      width: 100%;
+      height: 4px;
+      background: rgba(0, 255, 247, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .loading-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink), var(--neon-cyan));
+      animation: loading 2s infinite;
+    }
+    
+    @keyframes loading {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+    
+    .system-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    
+    .stat-item {
+      text-align: center;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(0, 255, 247, 0.3);
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .stat-item:hover {
+      border-color: var(--neon-pink);
+      transform: scale(1.05);
+    }
+.toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      background: rgba(0, 0, 0, 0.9);
+      border: 2px solid var(--neon-cyan);
+      border-radius: 12px;
+      padding: 16px 24px;
+      color: var(--neon-cyan);
+      font-family: 'Orbitron', monospace;
+      font-weight: 600;
+      font-size: 16px;
+      box-shadow: 
+        0 0 20px rgba(0, 255, 247, 0.3),
+        inset 0 0 10px rgba(0, 255, 247, 0.1);
+      backdrop-filter: blur(10px);
+      transform: translateX(400px);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      position: relative;
+      overflow: hidden;
+      min-width: 300px;
+      text-align: center;
+    }
+
+    .toast.show {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    .toast.hide {
+      transform: translateX(400px);
+      opacity: 0;
+    }
+
+    .toast::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 247, 0.2), transparent);
+      animation: toastScan 2s infinite;
+    }
+
+    @keyframes toastScan {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    .toast.creator {
+      border-color: var(--neon-pink);
+      color: var(--neon-pink);
+      box-shadow: 
+        0 0 20px rgba(255, 0, 110, 0.3),
+        inset 0 0 10px rgba(255, 0, 110, 0.1);
+    }
+
+    .toast.creator::before {
+      background: linear-gradient(90deg, transparent, rgba(255, 0, 110, 0.2), transparent);
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 640px) {
+      .toast-container {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+      }
+
+      .toast {
+        min-width: auto;
+        font-size: 14px;
+        padding: 12px 16px;
+      }
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      font-family: 'Orbitron', monospace;
+      color: var(--neon-cyan);
+      text-shadow: 0 0 10px var(--neon-cyan);
+    }
+    
+    .header-glow {
+      text-shadow: 
+        0 0 5px currentColor,
+        0 0 10px currentColor,
+        0 0 15px currentColor,
+        0 0 20px currentColor;
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <div class="cyber-grid"></div>
+  <div class="toast-container" id="toastContainer"></div>
+  <canvas class="matrix-bg" id="matrixCanvas"></canvas>
+  
+  <div class="floating-particles" id="particles"></div>
+  
+  <div class="main-container min-h-screen flex items-center justify-center px-4 py-8">
+    <div class="max-w-6xl w-full">
+      
+      <div class="text-center mb-12">
+        <div class="flex items-center justify-center mb-6">
+          <div class="status-indicator mr-3"></div>
+          <span class="terminal-text text-sm">SYSTEM ONLINE • THREAT DETECTION ACTIVE</span>
+        </div>
+        
+        <h1 class="glitch-title text-6xl lg:text-8xl mb-4">
+          FRAUDHOUND 1.0
+        </h1>
+        <div class="text-2xl lg:text-3xl font-bold mb-6 header-glow" style="color: var(--neon-pink);">
+          No More LoanApp Scams
+        </div>
+        
+        <div class="loading-bar mb-8"></div>
+        
+        <p class="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+          An AI-powered web application designed to detect scam loan apps by performing comprehensive analysis across the internet. 
+          It utilizes advanced preprocessing techniques, 
+          application security analysis, and AI-driven insights to determine whether an app is trustworthy or potentially fraudulent.
+        </p>
+      </div>
+
+      <div class="system-stats mb-12">
+        <div class="stat-item">
+          <div class="stat-number">99.7%</div>
+          <div class="text-sm text-gray-400">Detection Rate</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">1k+</div>
+          <div class="text-sm text-gray-400">Apps Scanned</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">24/7</div>
+          <div class="text-sm text-gray-400">Monitoring</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">6s</div>
+          <div class="text-sm text-gray-400">Scan Time</div>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        
+        <div class="section-card cyber-border rounded-xl p-8 hologram-effect">
+          <div class="flex items-center mb-6">
+            <span class="text-3xl mr-3">🔍</span>
+            <h2 class="text-2xl font-bold" style="color: var(--neon-cyan);">PLAY STORE SCANNER</h2>
+            <span class="threat-level threat-low ml-auto">SECURE</span>
+          </div>
+          
+          <div class="mb-6">
+            <label for="playstoreLink" class="block text-sm font-semibold mb-3 terminal-text">
+              › ENTER TARGET APPLICATION URL
+            </label>
+            <input 
+              id="playstoreLink" 
+              type="url" 
+              placeholder="https://play.google.com/store/apps/details?id=..." 
+              class="cyber-input w-full p-4 rounded-lg text-lg"
+            />
+          </div>
+          
+          <button id="buttonPlay" class="cyber-button w-full py-4 px-6 rounded-lg text-lg font-bold scan-animation" onclick="analysePlayStorelink()">
+            🚀 INITIATE DEEP SCAN
+          </button>
+          
+          <div class="mt-6 p-4 bg-black/50 rounded-lg border border-cyan-500/30">
+  <div id="terminal" class="terminal-text text-sm overflow-auto max-h-64 break-words whitespace-pre-wrap">
+    > Quantum real analysis...<br>
+    > Review network evaluation...<br>
+    > Behavioral pattern recognition...
+  </div>
+</div>
+
+        </div>
+        
+        <div class="section-card cyber-border rounded-xl p-8 hologram-effect">
+  <div class="flex items-center mb-6">
+    <span class="text-3xl mr-3">🧬</span>
+    <h2 class="text-2xl font-bold" style="color: var(--neon-pink);">APK FORENSICS (5 minute)</h2>
+    <span class="threat-level threat-high ml-auto">CRITICAL</span>
+  </div>
+
+  <div class="mb-6">
+    <label for="apkUpload" class="block text-sm font-semibold mb-3 terminal-text">
+      › UPLOAD SUSPICIOUS BINARY
+    </label>
+    <div class="relative">
+      <input
+        id="apkUpload"
+        type="file"
+        accept=".apk"
+        class="cyber-input w-full p-4 rounded-lg text-lg"
+      />
+      <div class="absolute top-1/2 right-4 transform -translate-y-1/2 text-2xl">📁</div>
+    </div>
+  </div>
+
+  <button onclick="uploadAPK()"  id="apkanalysis" class="cyber-button w-full py-4 px-6 rounded-lg text-lg font-bold scan-animation">
+    🔬 EXECUTE BINARY ANALYSIS
+  </button>
+
+  <div id="apkResults" class="mt-6 p-4 bg-black/50 rounded-lg border border-pink-500/30 max-h-64 overflow-hidden">
+  <div class="terminal-text text-sm overflow-auto max-h-64 break-words whitespace-pre-wrap">
+    <!-- Results will be displayed here -->
+  </div>
+</div>
+</div>
+
+  <script>
+    const canvas = document.getElementById('matrixCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const matrix = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%+-/~{[|`]}";
+    const matrixArray = matrix.split("");
+    
+    const fontSize = 10;
+    const columns = canvas.width / fontSize;
+    
+    const drops = [];
+    for(let x = 0; x < columns; x++) {
+      drops[x] = 1;
+    }
+    
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.fillStyle = '#00fff7';
+      ctx.font = fontSize + 'px monospace';
+      
+      for(let i = 0; i < drops.length; i++) {
+        const text = matrixArray[Math.floor(Math.random() * matrixArray.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        
+        if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+    
+    setInterval(drawMatrix, 100);
+    
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      
+      setInterval(() => {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * window.innerWidth + 'px';
+        particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+        particle.style.background = ['#00fff7', '#ff006e', '#8338ec', '#39ff14'][Math.floor(Math.random() * 4)];
+        
+        particlesContainer.appendChild(particle);
+        
+        setTimeout(() => {
+          particle.remove();
+        }, 6000);
+      }, 300);
+    }
+    
+    createParticles();
+    
+    document.querySelectorAll('.cyber-button').forEach(button => {
+      button.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(this.offsetWidth, this.offsetHeight);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.style.position = 'absolute';
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        ripple.style.background = 'rgba(255, 255, 255, 0.5)';
+        ripple.style.borderRadius = '50%';
+        ripple.style.transform = 'scale(0)';
+        ripple.style.animation = 'ripple 0.6s linear';
+        ripple.style.pointerEvents = 'none';
+        
+        this.appendChild(ripple);
+        
+        setTimeout(() => {
+          ripple.remove();
+        }, 600);
+      });
+    });
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes ripple {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+    
+    function typeText(element, text, speed = 50) {
+      element.innerHTML = '';
+      let i = 0;
+      
+      function type() {
+        if (i < text.length) {
+          element.innerHTML += text.charAt(i);
+          i++;
+          setTimeout(type, speed);
+        }
+      }
+      
+      type();
+    }
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        showToast('Hello Judges! 👋', 'default', 3000);
+      }, 1000);
+      
+      setTimeout(() => {
+        showToast('Surya here - the creator 🚀', 'creator', 4000);
+      }, 3000);
+    });
+    function uploadAPK() {
+    const apkFile = document.getElementById('apkUpload').files[0];
+    const button = document.getElementById('apkanalysis');
+    //const subbutton = document.getElementById('subbutton');
+    if (!apkFile) {
+      alert('Please select an APK file.');
+      return;
+    }
+    button.innerHTML = "🔍 Analysing please wait...";
+    button.disabled = true;
+    //alert('It takes 5 minute to analyse full apk file for Vulnerabilities. are you okay with that?')
+    const formData = new FormData();
+    formData.append('apk_file', apkFile);
+    const terminalTextDiv = document.querySelector('#apkResults .terminal-text');
+    fetch('/upload-apk/', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'X-CSRFToken': '{{ csrf_token }}'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      terminalTextDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+      button.innerHTML="🔬 EXECUTE BINARY ANALYSIS";
+      button.disabled=false;
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }
+    function analysePlayStorelink(){
+    const playstoreLink = document.getElementById('playstoreLink').value;
+
+    if (!playstoreLink) {
+      alert('Please enter a Play Store link.');
+      return;
+    }
+    const button = document.getElementById("buttonPlay");
+    button.innerHTML = "🔍 SCANNING...";
+    button.disabled = true;
+    fetch('/analyze-playstore-link/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      body: `playstore_link=${encodeURIComponent(playstoreLink)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      const resultsDiv = document.getElementById('terminal');
+      resultsDiv.innerHTML = `<pre verflow-x-auto max-w-full whitespace-nowrap>${JSON.stringify(data, null, 2)}</pre>`;
+      button.innerHTML="🚀 INITIATE DEEP SCAN";
+      button.disabled = false;
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      const resultsDiv = document.getElementById('terminal');
+      resultsDiv.innerHTML = 'An error occurred while analyzing the Play Store link.';
+    });
+    
+    }
+ </script>
