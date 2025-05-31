@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-jz_=axbvtw+ft74dj0z4!6%o5y-yvpg3$=6q(tauf)f2!g#+_i
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ["*"]
+CSRF_TRUSTED_ORIGINS = ["https://fraudhoundweb.onrender.com"]
 
 
 # Application definition
